@@ -42,14 +42,14 @@ class ModelParameters():
     epochs=0
     convolutional_layer_count = 0
     """Display variables"""
-    training_display=100
-    cross_validate=100
+    training_display=1
+    cross_validate=1
     testing_display = 1000
     """Fixed Variables"""
     image_size=256
     number_of_classes=0
-    visualize_images = 10
-    testing_batch_size = 100
+    visualize_images = 1
+    testing_batch_size = 10
 
 
     def __init__(self, max_classes):

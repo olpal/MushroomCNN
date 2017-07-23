@@ -33,8 +33,6 @@ class CNN:
         self.neuron_count = (self.neuron_multiplier * (self.return_final_convolutional_layer().get_shape()[3]).value)
         self.terminate_network(keep_rate)
 
-
-
     def terminate_network(self,keep_rate):
         # Create fully connected layer
         self.full_network = self.create_fully_connected(self.return_final_convolutional_layer(), keep_rate)
