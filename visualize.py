@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def visualize_map(sess, layer_map, convolutional_layer, test_images, test_labels, number_of_images, data, labels,
-                  predictions, image_size, parameters):
+                  predictions, image_size, parameters, prediction_true_values, x, y, keep_prob,):
     np.set_printoptions(threshold=np.inf)
     if number_of_images > len(test_labels):
         number_of_images = len(test_labels)
@@ -14,16 +14,20 @@ def visualize_map(sess, layer_map, convolutional_layer, test_images, test_labels
         image = test_images[position:position + 1]
         label = test_labels[position:position + 1]
         convolutional_value, output_value = sess.run([convolutional_layer, predictions], feed_dict={data: image})
-        map_response = sess.run(layer_map, feed_dict={labels: label, convolutional_layer: convolutional_value})
+        #map_response = sess.run(layer_map, feed_dict={labels: label, convolutional_layer: convolutional_value})
+        map_list = []
+        map_response = sess.run([prediction_true_values], feed_dict={x: image, y: label, keep_prob: 1.})
+        map_list.append(np.reshape(map_response,[image_size, image_size]))
 
-        map_visualized = list(map(lambda x: ((x - x.min()) / (x.max() - x.min())), map_response))
+        map_visualized = list(map(lambda x: ((x - x.min()) / (x.max() - x.min())), map_list))
 
         for visual, original in zip(map_visualized, image):
             plt.imshow(1 - np.resize(original, [image_size, image_size]), cmap='gray_r')
             plt.imshow(visual, cmap='jet', alpha=0.35, interpolation='none', vmin=0, vmax=1)
-            cmap_file = '{}/map_{}.{}'.format(parameters.output_dir, position, parameters.output_file_ext)
+            cmap_file = '{}/map_{}_jet.{}'.format(parameters.output_dir, position, parameters.output_file_ext)
             plt.savefig(cmap_file)
             plt.close()
+        plt.imsave('{}/map_{}_original.{}'.format(parameters.output_dir, position, parameters.output_file_ext), np.reshape(image,(256,256)), cmap='gray')
 
 
 def visualize_data(sess, test_images, test_labels, number_of_images, prediction_round_values, x, y, keep_prob, parameters):
@@ -34,6 +38,11 @@ def visualize_data(sess, test_images, test_labels, number_of_images, prediction_
 
         predictions = sess.run([prediction_round_values], feed_dict={x: image, y: label, keep_prob: 1.})
 
+        plt.imsave('{}/map_{}_label.png'.format(parameters.output_dir, position), np.reshape(label, (256,256)), cmap='gray')
+        plt.clf()
+        plt.imsave('{}/map_{}_prediction.png'.format(parameters.output_dir, position), np.reshape(predictions, (256,256)), cmap='gray')
+        plt.clf()
+
         labelfile = open('{}/map_{}_data.txt'.format(parameters.output_dir, position), 'w')
         reshaped_label = np.reshape(label, (65536,))
         reshaped_prediction = np.reshape(predictions, (65536,))
@@ -41,6 +50,8 @@ def visualize_data(sess, test_images, test_labels, number_of_images, prediction_
         labelfile.write("{}\n".format((np.array_str(reshaped_label, max_line_width=1000000))))
         labelfile.write("{}\n".format((np.array_str(reshaped_prediction, max_line_width=1000000))))
         labelfile.close()
+
+
 
 def get_map(label, convolutional_layer, image_size, fully_connected_layer):
     output_channels = int(convolutional_layer.get_shape()[-1])

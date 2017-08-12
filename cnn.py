@@ -3,7 +3,7 @@ import tensorflow as tf
 class CNN:
     convolutional_layers = []
     #Kernals
-    convolutional_kernel = 5
+    convolutional_kernel = 0
     pooling_kernel = 2
     #Size determinators
     layer_filter_increment=16
@@ -11,11 +11,12 @@ class CNN:
     #strides
     pool_stride = 2
 
-    def __init__(self, inData, keep_rate, convolutional_layer_count, image_size, number_of_classes, neuron_multiplier):
+    def __init__(self, inData, keep_rate, convolutional_layer_count, image_size, number_of_classes, neuron_multiplier, convolutional_filter):
         # Scalar variables
         self.image_size = image_size
         self.number_of_classes = number_of_classes
         self.neuron_multiplier = neuron_multiplier
+        self.convolutional_kernel = convolutional_filter
         #Shape data
         self.data = inData
         self.shape_data(self.data)

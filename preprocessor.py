@@ -19,11 +19,12 @@ image_count=1
 imageCell=1
 inputDirectory="/scratch/aolpin/testing/rawdata/"
 outputDirectory="/scratch/aolpin/testing/dataset2/"
+resultDirectoy="/Users/aolpin/Documents/School/thesis/results/2017-07-24--01-45-56-235850361/map_19_data.txt"
 image_output_count=1
 overlay_images=False
 write_original=False
 threshold=40
-mode=1
+mode=3
 
 
 def draw_circles(in_image):
@@ -111,6 +112,18 @@ def test_file():
             plt._imsave('{}img_1_test.png'.format(outputDirectory), array, cmap="gray")
             break
 
+def test_image_data():
+    with open(resultDirectoy, 'r') as label_file:
+        file=1
+        for line in label_file:
+            data = line.replace("[","")
+            data = data.replace("]", "")
+            data = data.replace("\n", "")
+            array = np.fromstring(data, dtype=int, sep=' ')
+            dir=os.path.dirname(resultDirectoy)
+            plt.imsave('{}/map_{}_binary.png'.format(os.path.dirname(resultDirectoy), file), np.reshape(array,(256,256)), cmap='gray')
+            file+=1
+
 def slice_image(inimage):
     slices = []
     shape = inimage.shape
@@ -169,3 +182,5 @@ if __name__ == '__main__':
             if file_count % 10 == 0:
                 print ("Processed {} files".format(file_count))
             file_count+=1
+    elif mode == 3:
+        test_image_data()
