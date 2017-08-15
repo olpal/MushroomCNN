@@ -119,7 +119,7 @@ if __name__ == '__main__':
 
     if len(sys.argv) > 1:
         print ("Arguments found, loading...")
-        mode = sys.argv[1]
+        mode = int(sys.argv[1])
         file = sys.argv[2]
 
     if mode == 1:

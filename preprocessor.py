@@ -29,7 +29,7 @@ mode=3
 
 def draw_circles(in_image):
     csvarray = np.zeros((in_image.shape[0], in_image.shape[1]), dtype=int)
-    for val in csvValues:
+    for val in csv_values:
         if float(val[2]) < threshold:
             continue
         rr, cc = draw.circle(float(val[1]), float(val[0]), radius=float(val[2]), shape=csvarray.shape)
@@ -83,10 +83,10 @@ def plot_image_rotate(slices, slices_rotated, in_image):
 
 def read_csv(filename):
     try:
-        with open('{}csv/{}'.format(inputDirectory,filename.replace(".bmp",".csv")), 'rb') as csvfile:
-            reader = csv.reader(csvfile, delimiter=',')
+        with open('{}csv/{}'.format(inputDirectory,filename.replace(".bmp",".csv")), 'rb') as csv_file:
+            reader = csv.reader(csv_file, delimiter=',')
             for row in reader:
-                csvValues.append(row)
+                csv_values.append(row)
     except:
         print "No csv value found for file {}".format(fileName)
 
@@ -133,8 +133,6 @@ def slice_image(inimage):
         finalX=False
         xStartPos = 0
         while True:
-            #csvSlices = slice_csv(xStartPos,(xStartPos+xsize),yStartPos,(yStartPos+ysize))
-            #imageSlices.append((yStartPos,(yStartPos+ysize),xStartPos,(xStartPos+xsize),csvSlices))
             slices.append((yStartPos, (yStartPos + ysize), xStartPos, (xStartPos + xsize)))
             xStartPos = (xStartPos + (xsize-xoverlap))
             if (xStartPos+xsize) > shape[1] and finalX:
@@ -171,10 +169,10 @@ if __name__ == '__main__':
         for file in files:
             fileName = os.path.basename(file)
             image = plt.imread(file)
-            csvValues = []
+            csv_values = []
             dataArrays = []
             read_csv(fileName)
-            if not csvValues:
+            if not csv_values:
                 continue
             imageSlices = slice_image(image)
             imageSliceRotated = slice_image(ndimage.rotate(image,90))
