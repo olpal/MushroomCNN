@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Variables
-script_location='/scratch/aolpin/testing/code/main.py'
+script_location='/scratch/aolpin/testing/code/training.py'
 output_dir='/scratch/aolpin/testing/results/'
 datset_dir='/scratch/aolpin/testing/dataset/data/'
 #datset_dir='/tmp/testing/data/'
@@ -12,19 +12,23 @@ dropout=( )
 conv_layers=( )
 epochs=( )
 neurons=( )
+conv_size=( )
+sigmoid_shift=( )
 #Loop controls
 min_tbs=128
 max_tbs=128
-min_lr=0.0001
+min_lr=0.001
 max_lr=0.001
-min_drop=0.7
+min_drop=0.8
 max_drop=0.8
-min_lay=3
-max_lay=6
+min_lay=5
+max_lay=5
 min_epoch=2000
 max_epoch=2000
-min_neurons=20
+min_neurons=60
 max_neurons=60
+min_conv=5
+max_conv=5
 
 #Populates all data arrays
 function load_arrays(){
@@ -73,6 +77,14 @@ function load_arrays(){
 		min_neurons=$( bc <<< "$min_neurons+10")
 		loop_test=$(bc <<< "$min_neurons<=$max_neurons")
 	done
+
+	loop_test=$(bc <<< "$min_conv<=$max_conv")
+	#load convolutions
+	while [ $loop_test == 1 ]; do
+		conv_size=("${conv_size[@]}" "$min_conv")
+		min_conv=$( bc <<< "$min_conv+2")
+		loop_test=$(bc <<< "$min_conv<=$max_conv")
+	done
 	
 }
 
@@ -99,9 +111,11 @@ function run_normal(){
 	    		for d in "${dropout[@]}"; do
 	    			for l in "${learning_rate[@]}"; do
 	    				for n in "${neurons[@]}"; do
-		    				date_time=`date +%Y-%m-%d--%H-%M-%S-%N`
-		    				echo "$script_location $datset_dir $output_dir$date_time $t $l $d $e $c $n > $log_dir$date_time.log"
-		    				sqsub -r 4h -q gpu -f threaded -n 16 --gpp=8 --mpp=60g -o "$log_dir$date_time.log" python $script_location $datset_dir "$output_dir$date_time" $t $l $d $e $c $n
+	    					for f in "${conv_size[@]}"; do
+			    				date_time=`date +%Y-%m-%d--%H-%M-%S-%N`
+			    				echo "$script_location $datset_dir $output_dir$date_time $t $l $d $e $c $n $f > $log_dir$date_time.log"
+			    				sqsub -r 4h -q gpu -f threaded -n 16 --gpp=8 --mpp=24g -o "$log_dir$date_time.log" python $script_location $datset_dir "$output_dir$date_time" $t $l $d $e $c $n $f
+		    				done
 		    			done
 					done
 				done
