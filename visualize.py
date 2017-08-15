@@ -4,17 +4,15 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 
-def visualize_map(sess, layer_map, convolutional_layer, test_images, test_labels, number_of_images, data, labels,
-                  predictions, image_size, parameters, prediction_true_values, x, y, keep_prob,):
+def visualize_map(sess, test_images, test_labels, image_size, dataset_params, prediction_true_values, x, y, keep_prob, model_params):
     np.set_printoptions(threshold=np.inf)
+    number_of_images = model_params.visualize_images
     if number_of_images > len(test_labels):
         number_of_images = len(test_labels)
 
     for position in range(number_of_images):
         image = test_images[position:position + 1]
         label = test_labels[position:position + 1]
-        convolutional_value, output_value = sess.run([convolutional_layer, predictions], feed_dict={data: image})
-        #map_response = sess.run(layer_map, feed_dict={labels: label, convolutional_layer: convolutional_value})
         map_list = []
         map_response = sess.run([prediction_true_values], feed_dict={x: image, y: label, keep_prob: 1.})
         map_list.append(np.reshape(map_response,[image_size, image_size]))
@@ -24,28 +22,28 @@ def visualize_map(sess, layer_map, convolutional_layer, test_images, test_labels
         for visual, original in zip(map_visualized, image):
             plt.imshow(1 - np.resize(original, [image_size, image_size]), cmap='gray_r')
             plt.imshow(visual, cmap='jet', alpha=0.35, interpolation='none', vmin=0, vmax=1)
-            cmap_file = '{}/map_{}_jet.{}'.format(parameters.output_dir, position, parameters.output_file_ext)
+            cmap_file = '{}/map_{}_jet.{}'.format(dataset_params.output_dir, position, dataset_params.output_file_ext)
             plt.savefig(cmap_file)
             plt.close()
-        plt.imsave('{}/map_{}_original.{}'.format(parameters.output_dir, position, parameters.output_file_ext), np.reshape(image,(256,256)), cmap='gray')
+        plt.imsave('{}/map_{}_original.{}'.format(dataset_params.output_dir, position, dataset_params.output_file_ext), np.reshape(image,(model_params.image_size,model_params.image_size)), cmap='gray')
 
 
-def visualize_data(sess, test_images, test_labels, number_of_images, prediction_round_values, x, y, keep_prob, parameters):
+def visualize_data(sess, test_images, test_labels, prediction_round_values, x, y, keep_prob, dataset_params, model_params):
 
-    for position in range(number_of_images):
+    for position in range(model_params.visualize_images):
         image = test_images[position:position + 1]
         label = test_labels[position:position + 1]
 
         predictions = sess.run([prediction_round_values], feed_dict={x: image, y: label, keep_prob: 1.})
 
-        plt.imsave('{}/map_{}_label.png'.format(parameters.output_dir, position), np.reshape(label, (256,256)), cmap='gray')
+        plt.imsave('{}/map_{}_label.png'.format(dataset_params.output_dir, position), np.reshape(label, (model_params.image_size,model_params.image_size)), cmap='gray')
         plt.clf()
-        plt.imsave('{}/map_{}_prediction.png'.format(parameters.output_dir, position), np.reshape(predictions, (256,256)), cmap='gray')
+        plt.imsave('{}/map_{}_prediction.png'.format(dataset_params.output_dir, position), np.reshape(predictions, (model_params.image_size,model_params.image_size)), cmap='gray')
         plt.clf()
 
-        labelfile = open('{}/map_{}_data.txt'.format(parameters.output_dir, position), 'w')
-        reshaped_label = np.reshape(label, (65536,))
-        reshaped_prediction = np.reshape(predictions, (65536,))
+        labelfile = open('{}/map_{}_data.txt'.format(dataset_params.output_dir, position), 'w')
+        reshaped_label = np.reshape(label, (model_params.image_size*model_params.image_size,))
+        reshaped_prediction = np.reshape(predictions, (model_params.image_size*model_params.image_size,))
         reshaped_prediction = reshaped_prediction.astype(int)
         labelfile.write("{}\n".format((np.array_str(reshaped_label, max_line_width=1000000))))
         labelfile.write("{}\n".format((np.array_str(reshaped_prediction, max_line_width=1000000))))
