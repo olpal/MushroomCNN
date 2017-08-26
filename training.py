@@ -1,4 +1,3 @@
-import datetime
 import tensorflow as tf
 import cnn as cn
 import visualize as vs
@@ -14,7 +13,7 @@ version = 4.0
 u.printf ("Starting model execution at {}".format(dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 
 """Variables"""
-u.printf ("Intializing list variables...")
+u.printf ("Initializing list variables...")
 training_losses = []
 training_accuracies = []
 validation_losses = []
@@ -57,11 +56,11 @@ prediction = cnn.return_network()
 cost = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=prediction, labels=y))
 optimizer = tf.train.AdamOptimizer(params.learning_rate).minimize(cost)
 
-"""Overall Accuracy """
+"""Overall Accuracy"""
 correct_prediction = tf.equal(tf.round(tf.nn.sigmoid(prediction)), y)
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
-"""All true Accuracy """
+"""All true Accuracy"""
 all_true = tf.reduce_min(tf.cast(correct_prediction, tf.float32), 1)
 accuracy_all_true = tf.reduce_mean(all_true)
 

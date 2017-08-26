@@ -7,7 +7,7 @@ class CNN:
     pooling_kernel = 2
     #Size determinators
     layer_filter_increment=16
-    neuron_multiplier=40
+    neuron_multiplier=0
     #strides
     pool_stride = 2
 

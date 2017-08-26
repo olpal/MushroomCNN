@@ -1,6 +1,5 @@
 import util as u
 import os
-import datetime
 
 class ImageProcessingParameters():
     # DOG,LOG,DOH - The minimum standard deviation for Gaussian Kernel. Keep this low to detect smaller blobs
@@ -26,9 +25,9 @@ class ImageProcessingParameters():
     export_overlay = True
     export_data = True
     mode = 1
-    input_file = "/Users/aolpin/Documents/School/thesis/results/2017-08-13--13-03-00-916973452/predicted_image.png"
-    overlay_file = "/Users/aolpin/Documents/School/thesis/data/images/1_2016-11-15-11_00.bmp"
-    output_dir = "/Users/aolpin/Documents/School/thesis/results/2017-08-13--13-03-00-916973452"
+    input_file = ""
+    overlay_file = ""
+    output_dir = ""
 
 class DataSetParameters():
     """File extensions"""
@@ -51,10 +50,12 @@ class DataSetParameters():
             os.mkdir(self.output_dir)
 
 class ExecutionParameters():
-    model_directory = "/Users/aolpin/Documents/School/thesis/results/2017-08-13--13-03-00-916973452"
-    variable_full_path=""
-    model_full_path=""
-    input_image = "/Users/aolpin/Documents/School/thesis/dataset-sig/images/1_2016-11-15-11_00.bmp"
+    model_directory = ""
+    variable_full_path = ""
+    model_full_path = ""
+    input_image = ""
+    output_directory = ""
+    prediction_file_name = "predicted_image.png"
     x_size = 256
     y_size = 256
     x_overlap = 80
@@ -62,15 +63,14 @@ class ExecutionParameters():
     export_data=False
     export_image=True
 
-
 class ModelParameters():
     """File Paths"""
-    dataset_location = "/Users/aolpin/Documents/School/thesis/data-sig/images"
-    output_dir = "/Users/aolpin/Documents/School/thesis/results/{}".format(datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S'))
+    dataset_location = ""
+    output_dir = ""
     saved_model_file_name = "model.ckpt"
     saved_variable_file_name = "variables.txt"
-    saved_model_file_path = "/tmp"
-    saved_variable_file_path = "/tmp"
+    saved_model_file_path = ""
+    saved_variable_file_path = ""
     """Display variables"""
     training_display=100
     cross_validate=100

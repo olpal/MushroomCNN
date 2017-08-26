@@ -17,9 +17,9 @@ yoverlap=80
 image=""
 image_count=1
 imageCell=1
-inputDirectory="/scratch/aolpin/testing/rawdata/"
-outputDirectory="/scratch/aolpin/testing/dataset2/"
-resultDirectoy="/Users/aolpin/Documents/School/thesis/results/2017-07-24--01-45-56-235850361/map_19_data.txt"
+inputDirectory=""
+outputDirectory=""
+resultDirectoy=""
 image_output_count=1
 overlay_images=False
 write_original=False
@@ -90,40 +90,6 @@ def read_csv(filename):
     except:
         print "No csv value found for file {}".format(fileName)
 
-def test_file():
-    imagedata = misc.imread('{}images/img_78120.png'.format(outputDirectory), flatten=True)
-    with open('{}images/img_78120.txt'.format(outputDirectory), 'r') as label_file:
-        for line in label_file:
-            data = line.replace("[","")
-            data = data.replace("]", "")
-            data = data.replace("\n", "")
-            array = np.fromstring(data, dtype=int, sep=' ')
-
-            slicedImage = np.reshape(imagedata, (65536,))
-            for i in xrange(65536):
-                if array[i] == 1:
-                    slicedImage[i] = 1
-            """This will generate circles"""
-            plt.imsave('{}imagesimg_1_test_overlay.png'.format(outputDirectory),
-                       np.reshape(slicedImage, (256, 256)), cmap='gray')
-
-            array = array.reshape(256,256)
-
-            plt._imsave('{}img_1_test.png'.format(outputDirectory), array, cmap="gray")
-            break
-
-def test_image_data():
-    with open(resultDirectoy, 'r') as label_file:
-        file=1
-        for line in label_file:
-            data = line.replace("[","")
-            data = data.replace("]", "")
-            data = data.replace("\n", "")
-            array = np.fromstring(data, dtype=int, sep=' ')
-            dir=os.path.dirname(resultDirectoy)
-            plt.imsave('{}/map_{}_binary.png'.format(os.path.dirname(resultDirectoy), file), np.reshape(array,(256,256)), cmap='gray')
-            file+=1
-
 def slice_image(inimage):
     slices = []
     shape = inimage.shape
@@ -155,30 +121,20 @@ def rename_files():
 
 if __name__ == '__main__':
 
-    if len(sys.argv) > 1:
-        print ("Arguments found, loading...")
-        mode = sys.argv[1]
-        file = sys.argv[2]
-
-    if mode == 1:
-        test_file()
-    elif mode == 2:
-        files = glob.glob('{}{}/*.bmp'.format(inputDirectory,'images'))
-        print ("Found {} files".format(len(files)))
-        file_count=1
-        for file in files:
-            fileName = os.path.basename(file)
-            image = plt.imread(file)
-            csv_values = []
-            dataArrays = []
-            read_csv(fileName)
-            if not csv_values:
-                continue
-            imageSlices = slice_image(image)
-            imageSliceRotated = slice_image(ndimage.rotate(image,90))
-            plot_image_rotate(imageSlices, imageSliceRotated, image)
-            if file_count % 10 == 0:
-                print ("Processed {} files".format(file_count))
-            file_count+=1
-    elif mode == 3:
-        test_image_data()
+    files = glob.glob('{}{}/*.bmp'.format(inputDirectory,'images'))
+    print ("Found {} files".format(len(files)))
+    file_count=1
+    for file in files:
+        fileName = os.path.basename(file)
+        image = plt.imread(file)
+        csv_values = []
+        dataArrays = []
+        read_csv(fileName)
+        if not csv_values:
+            continue
+        imageSlices = slice_image(image)
+        imageSliceRotated = slice_image(ndimage.rotate(image,90))
+        plot_image_rotate(imageSlices, imageSliceRotated, image)
+        if file_count % 10 == 0:
+            print ("Processed {} files".format(file_count))
+        file_count+=1

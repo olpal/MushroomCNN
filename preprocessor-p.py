@@ -5,28 +5,21 @@ import csv
 import glob
 import os
 from skimage import draw
-from decimal import *
 import numpy as np
 from scipy import ndimage
-from scipy import misc
 import sys
 
 xsize=256
 ysize=256
 xoverlap=80
 yoverlap=80
-image=""
 image_count=1
 imageCell=1
-inputDirectory="/scratch/aolpin/testing/rawdata/"
-outputDirectory="/scratch/aolpin/testing/dataset/"
+inputDirectory=""
+outputDirectory=""
 file=""
-image_output_count=1
 threshold=0
 mode=1
-#file = "/Users/aolpin/Documents/School/thesis/data/images/1_2016-11-15-11_00.bmp"
-#inputDirectory="/Users/aolpin/Documents/School/thesis/data/"
-#outputDirectory="/Users/aolpin/Documents/School/thesis/datatest/"
 
 
 def plot_image_rotate(slices, slices_rotated, in_image, filename):

@@ -1,8 +1,6 @@
 import numpy as np
 from glob import glob
-import matplotlib.pyplot as plt
 import random as rd
-from sklearn.preprocessing import OneHotEncoder
 from sklearn.utils import shuffle
 import scipy.misc as sc
 import parameters as params
@@ -28,7 +26,6 @@ class DataSet:
         return dataset_labels[0:test_end_index],dataset_images[0:test_end_index], \
                dataset_labels[test_end_index:validate_end_index], dataset_images[test_end_index:validate_end_index], \
                dataset_labels[validate_end_index:train_end_index],dataset_images[validate_end_index:train_end_index]
-
 
     def load_label_datafile(self, label_names, start_position, to_load):
         data_set_labels = []
