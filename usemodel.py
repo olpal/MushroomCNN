@@ -1,10 +1,9 @@
-#import matplotlib
-#matplotlib.use('Agg')
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import tensorflow as tf
 import cnn as cn
 import parameters as hp
-import sys
 import util as u
 import csv
 import numpy as np
@@ -97,19 +96,9 @@ class Model():
             predicted_images.append(sess.run([network], feed_dict={self.x: to_process, self.keep_prob: 1.}))
         return predicted_images
 
-    def export_data(self, image_data, shape):
-        np.set_printoptions(threshold=np.inf)
-        image_file = open('{}/predicted_data.txt'.format(self.exec_params.output_directory), 'w')
-
-        reshaped_prediction = np.reshape(image_data, (shape[0] * shape[1],))
-        reshaped_prediction = reshaped_prediction.astype(int)
-
-        image_file.write("{}\n".format((np.array_str(reshaped_prediction, max_line_width=1000000))))
-        image_file.close()
-
     def export_image(self, image_data):
         plt.imshow(image_data, cmap="gray")
-        plt.imsave('{}/predicted_image.png'.format(self.exec_params.output_directory), image_data, cmap="gray", dpi=250)
+        plt.imsave('{}/{}'.format(self.exec_params.output_directory,self.exec_params.prediction_file_name), image_data, cmap="gray", dpi=250)
 
     def execute(self):
         u.printf("Executing version {} of the code".format(version))
@@ -127,9 +116,4 @@ class Model():
 
         u.printf("Stitching image")
         full_predicted_image = self.stitch_image(slices,predicted_images,image.shape)
-        if self.exec_params.export_data:
-            u.printf("Exporting data")
-            self.export_data(full_predicted_image, image.shape)
-        if self.exec_params.export_image:
-            u.printf("Exporting image")
-            self.export_image(full_predicted_image)
+        self.export_image(full_predicted_image)
